@@ -1,6 +1,6 @@
 package com.spribe.currency.controller;
 
-import com.spribe.currency.entity.ExchangeRate;
+import com.spribe.currency.dto.ExchangeRateResponse;
 import com.spribe.currency.service.ExchangeRateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,8 @@ public class ExchangeRateController {
     private final ExchangeRateService exchangeRateService;
 
     @GetMapping
-    public ResponseEntity<List<ExchangeRate>> getExchangeRates(@RequestParam("currency") String currency) {
-        List<ExchangeRate> rates = exchangeRateService.getExchangeRates(currency);
+    public ResponseEntity<List<ExchangeRateResponse>> getExchangeRates(@RequestParam("currency") String currency) {
+        List<ExchangeRateResponse> rates = exchangeRateService.getExchangeRates(currency);
         return ResponseEntity.ok(rates);
     }
 }

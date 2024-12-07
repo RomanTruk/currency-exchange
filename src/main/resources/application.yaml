@@ -16,7 +16,7 @@ spring:
 
 scheduling:
   cron:
-    fetch-exchange-rates: "0 * * * * ?"
+    fetch-exchange-rates: "0 0 * * * *"  # Every hour
 
 integration:
   exchange-rate:

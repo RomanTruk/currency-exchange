@@ -1,6 +1,7 @@
 package com.spribe.currency.service;
 
 import com.spribe.currency.dto.ExchangeRateIntegrationResponse;
+import com.spribe.currency.dto.ExchangeRateResponse;
 import com.spribe.currency.entity.Currency;
 import com.spribe.currency.entity.ExchangeRate;
 import com.spribe.currency.integration.ExchangeRateIntegration;
@@ -36,13 +37,14 @@ public class ExchangeRateService {
     private final Map<String, List<ExchangeRate>> exchangeRatesCache = new ConcurrentHashMap<>();
 
     @Transactional(readOnly = true)
-    public List<ExchangeRate> getExchangeRates(String currency) {
+    public List<ExchangeRateResponse> getExchangeRates(String currency) {
         log.info("Getting exchange rate for currency: {}.", currency);
-        return exchangeRatesCache.get(currency);
+        List<ExchangeRate> exchangeRates = exchangeRatesCache.get(currency);
+        return exchangeRateMapper.toResponse(exchangeRates);
     }
 
     @Transactional
-    public void getCurrencyExchangeRates(Currency currency) {
+    public void fetchCurrencyExchangeRates(Currency currency) {
         log.info("Fetching exchange rate for currency: {}.", currency);
 
         List<Currency> allCurrencies = currencyRepository.findAll().stream()
