@@ -25,5 +25,9 @@ public interface ExchangeRateMapper {
         return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneOffset.UTC);
     }
 
-    List<ExchangeRateResponse> toResponse(List<ExchangeRate> exchangeRates);
+    @Mapping(target = "baseCurrencyName", source = "baseCurrency.name")
+    @Mapping(target = "targetCurrencyName", source = "targetCurrency.name")
+    ExchangeRateResponse toResponse(ExchangeRate exchangeRate);
+
+    List<ExchangeRateResponse> toResponses(List<ExchangeRate> exchangeRates);
 }

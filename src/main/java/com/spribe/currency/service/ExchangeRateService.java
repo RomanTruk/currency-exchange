@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,7 +41,7 @@ public class ExchangeRateService {
     public List<ExchangeRateResponse> getExchangeRates(String currency) {
         log.info("Getting exchange rate for currency: {}.", currency);
         List<ExchangeRate> exchangeRates = exchangeRatesCache.get(currency);
-        return exchangeRateMapper.toResponse(exchangeRates);
+        return exchangeRateMapper.toResponses(exchangeRates);
     }
 
     @Transactional
@@ -130,22 +131,18 @@ public class ExchangeRateService {
     }
 
     private void mergeExchangeRatesIntoCache(List<ExchangeRate> rates) {
-        rates.stream().collect(Collectors.groupingBy(ExchangeRate::getBaseCurrency))
-                .forEach((baseCurrency, newRates) -> exchangeRatesCache.merge(
-                                 baseCurrency.getName(),
-                                 newRates,
-                                 (existingRates, incomingRates) -> {
-                                     Map<String, ExchangeRate> uniqueRates =
-                                             Stream.concat(existingRates.stream(), incomingRates.stream())
-                                                     .collect(Collectors.toMap(
-                                                             rate -> rate.getTargetCurrency().getName(),
-                                                             Function.identity(),
-                                                             (existing, incoming) -> incoming
-                                                     ));
-                                     return new ArrayList<>(uniqueRates.values());
-                                 }
-                         )
-                );
+        Map<String, List<ExchangeRate>> groupedRates = rates.stream()
+                .collect(Collectors.groupingBy(rate -> rate.getBaseCurrency().getName()));
+
+        groupedRates.forEach((baseCurrencyName, newRates) -> exchangeRatesCache.merge(baseCurrencyName,
+                                                                                      newRates,
+                                                                                      this::mergeRates));
     }
 
+    private List<ExchangeRate> mergeRates(List<ExchangeRate> existingRates, List<ExchangeRate> incomingRates) {
+        Map<String, ExchangeRate> rates = new HashMap<>();
+        Stream.concat(existingRates.stream(), incomingRates.stream())
+                .forEach(rate -> rates.put(rate.getTargetCurrency().getName(), rate));
+        return new ArrayList<>(rates.values());
+    }
 }
