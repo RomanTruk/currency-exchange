@@ -31,7 +31,7 @@ public class CurrencyService {
             throw new IllegalArgumentException("Currency with this name already exists.");
         }
         Currency savedCurrency = currencyRepository.save(currencyMapper.mapToEntity(name));
-        exchangeRateService.fetchCurrencyExchangeRates(savedCurrency);
+        exchangeRateService.getCurrencyExchangeRates(savedCurrency);
 
         return currencyMapper.map(savedCurrency);
     }

@@ -42,7 +42,7 @@ public class ExchangeRateService {
     }
 
     @Transactional
-    public void fetchCurrencyExchangeRates(Currency currency) {
+    public void getCurrencyExchangeRates(Currency currency) {
         log.info("Fetching exchange rate for currency: {}.", currency);
 
         List<Currency> allCurrencies = currencyRepository.findAll().stream()
@@ -67,7 +67,7 @@ public class ExchangeRateService {
     }
 
     @Transactional
-    public void fetchCurrencyExchangeRatesV2(Currency currency) {
+    public void updateCurrencyExchangeRates(Currency currency) {
         log.info("Fetching exchange rate for currency: {}.", currency);
 
         List<Currency> allCurrencies = currencyRepository.findAll().stream()

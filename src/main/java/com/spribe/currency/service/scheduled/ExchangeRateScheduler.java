@@ -32,7 +32,7 @@ public class ExchangeRateScheduler {
             List<CompletableFuture<Void>> futures = currencies.stream()
                     .map(currency -> CompletableFuture.runAsync(() -> {
                         try {
-                            exchangeRateService.fetchCurrencyExchangeRatesV2(currency);
+                            exchangeRateService.updateCurrencyExchangeRates(currency);
                         } catch (Exception e) {
                             log.error("Failed to fetch exchange rates for currency: {}", currency.getName(), e);
                         }
