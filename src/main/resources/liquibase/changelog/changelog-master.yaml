@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: v1-create-currency-exchange-rate-tables.sql
+      relativeToChangelogFile: true
