@@ -3,6 +3,7 @@ package com.spribe.currency.integration;
 import com.spribe.currency.dto.ExchangeRateIntegrationResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +43,8 @@ class ExchangeRateIntegrationTest {
                                                                                        "USD",
                                                                                        rates);
 
-        when(exchangeRateClient.getExchangeRates(null, "EUR,GBP", source, 0))
+        ArgumentCaptor<String> currenciesCaptor = ArgumentCaptor.forClass(String.class);
+        when(exchangeRateClient.getExchangeRates(eq(null), currenciesCaptor.capture(), eq(source), eq(0)))
                 .thenReturn(response);
 
         // when
@@ -51,6 +54,10 @@ class ExchangeRateIntegrationTest {
         assertNotNull(result);
         assertTrue(result.success());
         assertEquals(rates, result.rates());
+
+        assertTrue(currenciesCaptor.getValue().contains("EUR"));
+        assertTrue(currenciesCaptor.getValue().contains("GBP"));
+        assertEquals(2, currenciesCaptor.getValue().split(",").length);
     }
 
     @Test
