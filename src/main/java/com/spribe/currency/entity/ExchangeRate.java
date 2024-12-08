@@ -13,7 +13,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,5 +37,5 @@ public class ExchangeRate {
     private BigDecimal rate;
 
     @Column(name = "updated")
-    private LocalDateTime updated;
+    private Long updated;
 }

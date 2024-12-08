@@ -17,9 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -121,14 +118,14 @@ class ExchangeRateServiceTest {
                                              baseCurrency,
                                              targetCurrency,
                                              exchangeRate,
-                                             LocalDateTime.ofInstant(Instant.ofEpochSecond(1L), ZoneOffset.UTC)));
+                                             1L));
 
         when(exchangeRateMapper.mapToEntity(eq(targetCurrency), eq(baseCurrency), eq(reverseExchangeRate), eq(1L)))
                 .thenReturn(new ExchangeRate(null,
                                              targetCurrency,
                                              baseCurrency,
                                              reverseExchangeRate,
-                                             LocalDateTime.ofInstant(Instant.ofEpochSecond(1L), ZoneOffset.UTC)));
+                                             1L));
 
         ExchangeRateService spyService = spy(exchangeRateService);
 
@@ -182,7 +179,7 @@ class ExchangeRateServiceTest {
                                        baseCurrency,
                                        targetCurrency,
                                        exchangeRate,
-                                       LocalDateTime.ofInstant(Instant.ofEpochSecond(1L), ZoneOffset.UTC))
+                                       1L)
         );
 
         when(exchangeRateMapper.mapToEntity(
@@ -194,7 +191,7 @@ class ExchangeRateServiceTest {
                                        targetCurrency,
                                        baseCurrency,
                                        exchangeRate,
-                                       LocalDateTime.ofInstant(Instant.ofEpochSecond(1L), ZoneOffset.UTC))
+                                       1L)
         );
 
         // when
@@ -243,7 +240,7 @@ class ExchangeRateServiceTest {
                 baseCurrency,
                 targetCurrency,
                 BigDecimal.valueOf(rate),
-                LocalDateTime.ofInstant(Instant.ofEpochSecond(1L), ZoneOffset.UTC)
+                1L
         );
         List<ExchangeRate> dbRates = List.of(existingRate);
         when(exchangeRateRepository.findByBaseOrTargetCurrency(baseCurrency)).thenReturn(dbRates);
@@ -253,14 +250,14 @@ class ExchangeRateServiceTest {
                 baseCurrency,
                 targetCurrency,
                 BigDecimal.valueOf(rate),
-                LocalDateTime.ofInstant(Instant.ofEpochSecond(1L), ZoneOffset.UTC)
+                1L
         );
         ExchangeRate fetchedEURRate = new ExchangeRate(
                 1L,
                 targetCurrency,
                 baseCurrency,
                 BigDecimal.valueOf(reversedRate),
-                LocalDateTime.ofInstant(Instant.ofEpochSecond(1L), ZoneOffset.UTC)
+                1L
         );
 
         when(exchangeRateMapper.mapToEntity(
