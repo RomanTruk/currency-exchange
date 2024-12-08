@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ExchangeRateIntegrationTest {
 
-    @Mock(strictness = Mock.Strictness.STRICT_STUBS)
+    @Mock
     private ExchangeRateClient exchangeRateClient;
 
     @InjectMocks
