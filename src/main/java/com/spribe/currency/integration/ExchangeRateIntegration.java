@@ -3,6 +3,7 @@ package com.spribe.currency.integration;
 import com.spribe.currency.dto.ExchangeRateIntegrationResponse;
 import com.spribe.currency.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class ExchangeRateIntegration {
@@ -24,17 +26,21 @@ public class ExchangeRateIntegration {
 
     @Retryable(retryFor = {RuntimeException.class}, backoff = @Backoff(delay = 2000))
     public ExchangeRateIntegrationResponse getExchangeRates(Set<String> currencies, String source) {
+        ExchangeRateIntegrationResponse response;
         try {
-            ExchangeRateIntegrationResponse response = exchangeRateClient.getExchangeRates(
+            response = exchangeRateClient.getExchangeRates(
                     accessKey, StringUtils.joinList(currencies), source, format);
 
-            if (response != null && response.success()) {
-                return response;
-            } else {
+            if (response == null || !response.success()) {
                 throw new RuntimeException("Failed to fetch exchange rates from API");
             }
-        } catch (Exception e) {
-            throw new RuntimeException("An error occurred while fetching exchange rates", e);
+        } catch (feign.FeignException e) {
+            log.error("Error fetch exchange rates from API integration", e);
+            throw new RuntimeException(
+                    String.format("%s: return code %d", "Exchange rates API", e.status())
+            );
         }
+
+        return response;
     }
 }
