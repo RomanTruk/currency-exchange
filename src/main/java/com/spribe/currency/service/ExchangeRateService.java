@@ -130,12 +130,11 @@ public class ExchangeRateService {
     }
 
     private void mergeExchangeRatesIntoCache(List<ExchangeRate> rates) {
-        Map<String, List<ExchangeRate>> groupedRates = rates.stream()
-                .collect(Collectors.groupingBy(rate -> rate.getBaseCurrency().getName()));
-
-        groupedRates.forEach((baseCurrencyName, newRates) -> exchangeRatesCache.merge(baseCurrencyName,
-                                                                                      newRates,
-                                                                                      this::mergeRates));
+        rates.stream()
+                .collect(Collectors.groupingBy(rate -> rate.getBaseCurrency().getName()))
+                .forEach((baseCurrencyName, newRates) -> exchangeRatesCache.merge(baseCurrencyName,
+                                                                                  newRates,
+                                                                                  this::mergeRates));
     }
 
     private List<ExchangeRate> mergeRates(List<ExchangeRate> existingRates, List<ExchangeRate> incomingRates) {
