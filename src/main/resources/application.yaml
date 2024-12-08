@@ -23,3 +23,8 @@ integration:
     url: http://apilayer.net/api/
     key: 7d49501a7c9f226b81b59835c1a2567e
     format: 1
+
+
+retry:
+  maxAttempts: 3
+  maxDelay: 2000

@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Service
 public class ExchangeRateIntegration {
 
     private final ExchangeRateClient exchangeRateClient;
@@ -24,7 +24,10 @@ public class ExchangeRateIntegration {
     @Value("${integration.exchange-rate.format}")
     private int format;
 
-    @Retryable(retryFor = {RuntimeException.class}, backoff = @Backoff(delay = 2000))
+    @Retryable(retryFor = {RuntimeException.class},
+            maxAttemptsExpression = "${retry.maxAttempts}",
+            backoff = @Backoff(delayExpression = "${retry.maxDelay}")
+    )
     public ExchangeRateIntegrationResponse getExchangeRates(Set<String> currencies, String source) {
         ExchangeRateIntegrationResponse response;
         try {
@@ -37,7 +40,7 @@ public class ExchangeRateIntegration {
         } catch (feign.FeignException e) {
             log.error("Error fetch exchange rates from API integration", e);
             throw new RuntimeException(
-                    String.format("%s: return code %d", "Exchange rates API", e.status())
+                    String.format("Exchange rates API: return code %d", e.status())
             );
         }
 
