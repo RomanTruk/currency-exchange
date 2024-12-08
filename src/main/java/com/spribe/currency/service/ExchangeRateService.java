@@ -37,7 +37,6 @@ public class ExchangeRateService {
     private final ExchangeRateIntegration exchangeRateIntegration;
     private final Map<String, List<ExchangeRate>> exchangeRatesCache = new ConcurrentHashMap<>();
 
-    @Transactional(readOnly = true)
     public List<ExchangeRateResponse> getExchangeRates(String currency) {
         log.info("Getting exchange rate for currency: {}.", currency);
         List<ExchangeRate> exchangeRates = exchangeRatesCache.get(currency);
